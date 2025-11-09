@@ -166,11 +166,41 @@ function day5() {
     arrData1.splice(0,1);
     const arrData2 = strData.substring(magicI).split('\n')
     .map(s => s.split(/,/).map(x => parseInt(x))).filter(u => !u.includes(NaN));
-    console.log(arrData2.filter(e => e.length<10))
-    let s = 0;   
-    for (const update of arrData2) {
-
+    const unordered = [];
+    let s1 = 0;  
+    out: for (const update of arrData2) {
+        for (const rule of arrData1) {
+            const i1 = update.indexOf(rule[0]);
+            const i2 = update.indexOf(rule[1]);
+            if (i1 == -1 || i2 == -1) continue;
+            if (i1 > i2) {
+                unordered.push(update);
+                continue out;
+            }
+        }
+        s1 += update[(update.length-update.length%2)/2];
     }
+    console.log(s1);
+    for (const u of unordered) {
+        const rules = [];
+        for (const rule of arrData1) {
+            const i1 = u.indexOf(rule[0]);
+            const i2 = u.indexOf(rule[1]);
+            if (i1 == -1 || i2 == -1) continue;
+            rules.push(rule);
+        }
+        u.sort((x, y) => {
+            for (const r of rules) {
+                if ((r[0]==x && r[1]==y))
+                    return -1;
+                if (r[0]==y && r[1]==x)
+                    return 1;
+            }
+            return 0;
+        });
+    }
+    s2 = unordered.reduce((a, u) => a+u[(u.length-u.length%2)/2], 0);
+    console.log(s2);
 }
 
 day5()
