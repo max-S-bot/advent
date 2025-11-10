@@ -1,18 +1,17 @@
 const data = require('./data')
+const print = console.log;
 
 function day1() {
     const strData = data.day1;
     const arrData = strData.split(/\s/).filter(s => s!=='').map(s => parseInt(s))
     const l = arrData.filter((c, i) => i%2===0).sort((x,y)=>(x-y));
     const r = arrData.filter((c, i) => i%2===1).sort((x,y)=>(x-y));
-
     const n = l.length;
     let s = 0;
     for (let i=0; i<n; i++) {
         s += Math.abs(l[i]-r[i]);
     }
     console.log(s)
-
     const appearances = {};
     for (const e of r) {
         if (e in appearances) 
@@ -20,9 +19,6 @@ function day1() {
         else 
             appearances[e] = 1;
     }
-
-
-
     const similarity = l.reduce((a, c) => a+c*(c in appearances?appearances[c]:0), 0);
     console.log(similarity)
 }
@@ -203,4 +199,41 @@ function day5() {
     console.log(s2);
 }
 
-day5()
+function day6() {
+    let strData = data.day6;
+    const arrData = strData.split('\n').filter(s => s.length>10)
+    .map(s => s.split(''));
+    strData = strData.split('').filter(c => c !== '\n');
+    const rLen = arrData[0].length;
+    const move = {
+        '^': [-1, 0],
+        'v': [1, 0],
+        '>': [0, 1],
+        '<': [0, -1]
+    };
+    const turn = {
+        '^': '>',
+        '>': 'v',
+        'v': '<',
+        '<': '^'
+    };
+    const p0 = strData.indexOf('^')
+    let p = [Math.floor(p0/rLen), p0%rLen];
+    let dir = '^';
+    while (true) {
+        arrData[p[0]][p[1]] = 'X';
+        const next = [p[0]+move[dir][0], p[1]+move[dir][1]];
+        if(next[0]==arrData.length || next[1]==rLen || next[0]==-1 || next[1]==-1)
+            break;
+        if (arrData[next[0]][next[1]] == '#')
+            dir = turn[dir];
+        else 
+            p = next;
+    }
+    const pCount = arrData.reduce((acc, r) => 
+    acc+r.reduce((a, p) => a+(p=='X'), 0), 0);
+    print(pCount);
+    
+}
+
+day6()
