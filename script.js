@@ -270,6 +270,7 @@ function day9() {
         }
         return arr;
     }).flat(1);
+    const arrData1 = [...arrData];
     const lastNumIdx = (arr) => {
         for (let i = arr.length - 1; i >= 0; i--) {
             if (arr[i] !== '.')
@@ -278,13 +279,42 @@ function day9() {
         return -1;
     };
     let n, d;
-    while ((n = lastNumIdx(arrData)) > (d = arrData.indexOf('.'))) {
-        const temp = arrData[n];
-        arrData[n] = arrData[d];
-        arrData[d] = temp;
+    while ((n = lastNumIdx(arrData1)) > (d = arrData1.indexOf('.'))) {
+        const temp = arrData1[n];
+        arrData1[n] = arrData1[d];
+        arrData1[d] = temp;
     }
-    const checksum = arrData.slice(0, arrData.indexOf('.')).map((c, i) => c * i).reduce((a, c) => a + c, 0);
-    prnt(checksum);
+    const checksum1 = arrData1.slice(0, arrData1.indexOf('.')).map((c, i) => c * i).reduce((a, c) => a + c, 0);
+    prnt(checksum1);
+    const arrData2 = '00...111...2...333.44.5555.6666.777.888899'.split('').map(c => c == '.' ? c : parseInt(c)); //[...arrData];
+    const maxNum = arrData2[lastNumIdx(arrData2)];
+    const nextNum = (arr, idx) => {
+        const n = arr.length;
+        for (let i = idx; i < n; i++) {
+            if (arr[i] !== '.')
+                return i;
+        }
+        return -1;
+    };
+    for (let i = maxNum; i > 0; i--) {
+        prnt(i);
+        const start = arrData2.indexOf(i);
+        const len = 1 + arrData2.lastIndexOf(i) - start;
+        let j = 0;
+        let gap = 0;
+        while (j != -1 && gap < len) {
+            const nextNumIdx = nextNum(arrData2, j = arrData2.indexOf('.', j + 1));
+            gap = nextNumIdx - j;
+            prnt(nextNumIdx + ' ' + j);
+        }
+        if (gap < len)
+            continue;
+        prnt(arrData2.splice(start, len, ...new Array(len).fill('.')));
+        prnt(arrData2.splice(j, len, ...new Array(len).fill(i)));
+        prnt(arrData2);
+    }
+    const checksum2 = arrData2.map((c, i) => (c == '.' ? 0 : c) * i).reduce((a, c) => a + c, 0);
+    prnt(checksum2);
 }
 day9();
 //# sourceMappingURL=script.js.map
