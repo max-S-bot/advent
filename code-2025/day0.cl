@@ -1,0 +1,1 @@
+(defun fib (n) (if (< n 2) 1 (+ (fib (1- n)) (fib (- n 2)))))
